@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>근황토크</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf6ee;
+    --card-bg: #ffffff;
+    --accent: #FE6B01;
+    --text: #1a1008;
+    --text-muted: #9b7355;
+    --border: #f0ddd0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding-bottom: 100px;
+  }
+
+  /* 헤더 */
+  .header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 3px;
+    background: var(--accent); border-radius: 2px;
+  }
+  .header h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 600; color: var(--text); margin-bottom: 8px;
+  }
+  .header p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* 카드 그리드 */
+  .wall-wrap {
+    max-width: 960px;
+    margin: 36px auto 0;
+    padding: 0 20px;
+    columns: 3 280px;
+    column-gap: 16px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    break-inside: avoid;
+    animation: fadeIn 0.4s ease;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card.new-card { border-color: var(--accent); background: #fff8f3; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .card-name { font-size: 14px; font-weight: 500; color: var(--accent); }
+  .card-time { font-size: 11px; color: var(--text-muted); }
+  .card-text { font-size: 14px; color: var(--text); line-height: 1.8; word-break: keep-all; }
+
+  .loading { text-align: center; padding: 60px; color: var(--text-muted); font-size: 14px; }
+  .empty { text-align: center; padding: 80px 24px; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
+
+  /* 플로팅 버튼 */
+  .fab {
+    position: fixed;
+    bottom: 32px; right: 28px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 22px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(254,107,1,0.35);
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+  }
+  .fab:hover { background: #e05500; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(254,107,1,0.45); }
+  .fab:active { transform: scale(0.97); }
+  .fab-icon { font-size: 18px; }
+
+  /* 모달 오버레이 */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,16,8,0.45);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+    padding: 20px;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  /* 모달 박스 */
+  .modal {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 32px 28px 28px;
+    width: 100%; max-width: 480px;
+    box-shadow: 0 16px 48px rgba(26,16,8,0.18);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s;
+    position: relative;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+  .modal input, .modal textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px; font-weight: 300;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .modal input:focus, .modal textarea:focus { border-color: var(--accent); }
+  .modal input { margin-bottom: 12px; }
+  .modal textarea { height: 120px; margin-bottom: 4px; }
+  .char-count { text-align: right; font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+  .char-count.over { color: #e53935; }
+  .modal-btns { display: flex; gap: 10px; }
+  .btn-cancel {
+    flex: 1;
+    background: var(--bg); color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-cancel:hover { background: #f0ddd0; }
+  .btn-submit {
+    flex: 2;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 10px; padding: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-submit:hover { background: #e05500; }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* 닫기 버튼 */
+  .modal-close {
+    position: absolute; top: 16px; right: 18px;
+    background: none; border: none;
+    font-size: 20px; color: var(--text-muted);
+    cursor: pointer; line-height: 1;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* 토스트 */
+  .toast {
+    position: fixed;
+    bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1a1008; color: #fff;
+    padding: 12px 24px; border-radius: 30px;
+    font-size: 14px; opacity: 0;
+    transition: all 0.3s; z-index: 999;
+    pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 600px) {
+    .wall-wrap { columns: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💬 근황토크</h1>
+  <p>어떻게 지내셨어요? 잘 계셨나요?</p>
+</div>
+
+<div class="wall-wrap" id="postList">
+  <div class="loading">불러오는 중...</div>
+</div>
+
+<!-- 플로팅 버튼 -->
+<button class="fab" onclick="openModal()">
+  <span class="fab-icon">✏️</span> 근황 남기기
+</button>
+
+<!-- 모달 -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">근황토크 💬</div>
+    <div class="modal-sub">어떻게 지내셨어요? 편하게 남겨주세요!</div>
+    <input type="text" id="nameInput" placeholder="이름 또는 닉네임" maxlength="20">
+    <textarea id="msgInput" placeholder="내용을 입력하세요 (400자 이내)" maxlength="400"></textarea>
+    <div class="char-count"><span id="charCount">0</span> / 400</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-submit" id="submitBtn" onclick="submitPost()">남기기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBTvllxgNdlScAn-1UdPlrlLL61EwU9AK_8",
+    authDomain: "th-4fa89.firebaseapp.com",
+    projectId: "th-4fa89",
+    storageBucket: "th-4fa89.firebasestorage.app",
+    messagingSenderId: "950541937241",
+    appId: "1:950541937241:web:8a6760b4509502be4a1f48",
+    measurementId: "G-GMDM7RDPMS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 글자수
+  const msgInput = document.getElementById('msgInput');
+  const charCount = document.getElementById('charCount');
+  msgInput.addEventListener('input', () => {
+    const len = msgInput.value.length;
+    charCount.textContent = len;
+    charCount.parentElement.className = 'char-count' + (len > 400 ? ' over' : '');
+  });
+
+  // 모달 열기/닫기
+  window.openModal = function() {
+    document.getElementById('modalOverlay').classList.add('open');
+    document.getElementById('nameInput').focus();
+  };
+  window.closeModal = function() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  };
+  window.handleOverlayClick = function(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  };
+
+  // ESC로 닫기
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // 글 올리기
+  window.submitPost = async function() {
+    const name = document.getElementById('nameInput').value.trim() || '익명';
+    const msg = msgInput.value.trim();
+    if (!msg) { showToast('내용을 입력해주세요 😊'); return; }
+    if (msg.length > 400) { showToast('400자 이내로 입력해주세요'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = '올리는 중...';
+
+    try {
+      await addDoc(collection(db, 'posts'), { name, msg, createdAt: serverTimestamp() });
+      document.getElementById('nameInput').value = '';
+      msgInput.value = ''; charCount.textContent = '0';
+      closeModal();
+      showToast('근황이 등록되었어요 🎉');
+    } catch(e) {
+      showToast('오류가 발생했어요. 다시 시도해주세요.'); console.error(e);
+    }
+    btn.disabled = false; btn.textContent = '남기기';
+  };
+
+  // 실시간 목록
+  const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+  onSnapshot(q, (snapshot) => {
+    const list = document.getElementById('postList');
+    if (snapshot.empty) {
+      list.innerHTML = '<div class="empty">아직 근황이 없어요.<br>첫 번째 근황을 남겨보세요 ✨</div>';
+      return;
+    }
+    list.innerHTML = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const time = d.createdAt ? formatTime(d.createdAt.toDate()) : '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="card-name">${escapeHtml(d.name)}</span>
+          <span class="card-time">${time}</span>
+        </div>
+        <div class="card-text">${escapeHtml(d.msg)}</div>
+      `;
+      list.appendChild(card);
+    });
+  });
+
+  function formatTime(date) {
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+    if (diff < 60) return '방금 전';
+    if (diff < 3600) return Math.floor(diff/60) + '분 전';
+    if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+    return `${date.getMonth()+1}/${date.getDate()}`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+              .replace(/"/g,'&quot;').replace(/'/g,'&#039;').replace(/\n/g,'<br>');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
