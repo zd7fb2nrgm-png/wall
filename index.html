@@ -38,7 +38,7 @@
   /* 댓글 */
   .read-more-btn { background:none; border:none; color:var(--accent); font-size:13px; cursor:pointer; padding:4px 0 0; font-family:'Noto Sans KR',sans-serif; font-weight:500; }
   .read-more-btn:hover { text-decoration:underline; }
-  .comment-toggle { display:flex; align-items:center; gap:6px; background:var(--bg); border:1.5px solid var(--border); border-radius:20px; font-size:17px; color:var(--text-muted); cursor:pointer; padding:8px 16px; font-family:'Noto Sans KR',sans-serif; transition:all 0.2s; font-weight:500; width:100%; justify-content:center; margin-top:4px; }
+  .comment-toggle { display:flex; align-items:center; gap:6px; background:var(--bg); border:1.5px solid var(--border); border-radius:20px; font-size:14px; color:var(--text-muted); cursor:pointer; padding:5px 12px; font-family:'Noto Sans KR',sans-serif; transition:all 0.2s; font-weight:500; margin-top:4px; display:inline-flex; }
   .comment-toggle:hover { border-color:var(--accent); color:var(--accent); background:#fff8f3; }
   .comment-toggle.open { border-color:var(--accent); color:var(--accent); background:#fff8f3; }
   .comment-section { display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
@@ -200,7 +200,7 @@
         </div>
         <div class="card-text" id="text-${d.id}"></div>
         <button class="comment-toggle" onclick="toggleComments(this, '${d.id}')">
-          💬 댓글쓰기 (<span class="cmt-count" id="cmt-count-${d.id}">0</span>개)
+          💬 댓글쓰기(<span class="cmt-count" id="cmt-count-${d.id}">0</span>개)
         </button>
         <div class="comment-section" id="comments-${d.id}">
           <div class="comment-list" id="comment-list-${d.id}"></div>
