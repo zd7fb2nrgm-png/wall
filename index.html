@@ -205,12 +205,7 @@
           <span class="card-name">${d.pinned ? '📌 ' : ''}${escapeHtml(d.name)}</span>
           <span class="card-time">${d.time}</span>
         </div>
-        <div class="card-text" id="text-${d.id}">
-          ${d.msg.length > 250
-            ? escapeHtml(d.msg.substring(0,250)) + '<span class="more-dots">...</span><span class="full-text" style="display:none">' + escapeHtml(d.msg.substring(250)) + '</span><br><button class="read-more-btn" onclick="toggleText(this)">자세히 보기</button>'
-            : escapeHtml(d.msg)
-          }
-        </div>
+        <div class="card-text" id="text-${d.id}"></div>
         <button class="comment-toggle" onclick="toggleComments(this, '${d.id}')">
           💬 댓글 <span class="cmt-count" id="cmt-count-${d.id}">0</span>개
         </button>
@@ -231,6 +226,43 @@
         </div>
       `;
       list.appendChild(card);
+
+      // 텍스트 처리 (250자 초과시 접기)
+      const textEl = document.getElementById('text-' + d.id);
+      if (d.msg.length > 250) {
+        const shortSpan = document.createElement('span');
+        shortSpan.textContent = d.msg.substring(0, 250);
+        const dotsSpan = document.createElement('span');
+        dotsSpan.className = 'more-dots';
+        dotsSpan.textContent = '...';
+        const fullSpan = document.createElement('span');
+        fullSpan.className = 'full-text';
+        fullSpan.style.display = 'none';
+        fullSpan.textContent = d.msg.substring(250);
+        const br = document.createElement('br');
+        const moreBtn = document.createElement('button');
+        moreBtn.className = 'read-more-btn';
+        moreBtn.textContent = '자세히 보기';
+        moreBtn.onclick = function() {
+          if (fullSpan.style.display === 'none') {
+            fullSpan.style.display = 'inline';
+            dotsSpan.style.display = 'none';
+            moreBtn.textContent = '접기';
+          } else {
+            fullSpan.style.display = 'none';
+            dotsSpan.style.display = 'inline';
+            moreBtn.textContent = '자세히 보기';
+          }
+        };
+        textEl.appendChild(shortSpan);
+        textEl.appendChild(dotsSpan);
+        textEl.appendChild(fullSpan);
+        textEl.appendChild(br);
+        textEl.appendChild(moreBtn);
+      } else {
+        textEl.textContent = d.msg;
+      }
+
       loadComments(d.id);
     });
 
@@ -271,21 +303,6 @@
   }
 
   window.addEventListener('resize', renderPage);
-
-  // 자세히 보기 토글
-  window.toggleText = function(btn) {
-    const fullText = btn.previousElementSibling;
-    const dots = btn.previousElementSibling.previousElementSibling;
-    if (fullText.style.display === 'none') {
-      fullText.style.display = 'inline';
-      dots.style.display = 'none';
-      btn.textContent = '접기';
-    } else {
-      fullText.style.display = 'none';
-      dots.style.display = 'inline';
-      btn.textContent = '자세히 보기';
-    }
-  };
 
   // 댓글 토글
   window.toggleComments = function(btn, postId) {
