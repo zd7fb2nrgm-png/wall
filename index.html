@@ -197,14 +197,8 @@
         if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         const section = document.getElementById('comments-' + d.id);
         const toggle = card.querySelector('.comment-toggle');
-        if (!section.classList.contains('open')) {
-          section.classList.add('open');
-          toggle.classList.add('open');
-        }
-        setTimeout(() => {
-          const nameInput = document.getElementById('cmt-name-' + d.id);
-          if (nameInput) nameInput.focus();
-        }, 50);
+        section.classList.toggle('open');
+        toggle.classList.toggle('open');
       });
       card.innerHTML = `
         <div class="card-top">
