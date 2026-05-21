@@ -22,8 +22,6 @@
     min-height: 100vh;
     padding-bottom: 100px;
   }
-
-  /* 헤더 */
   .header {
     text-align: center;
     padding: 48px 24px 32px;
@@ -37,12 +35,25 @@
     width: 60px; height: 3px;
     background: var(--accent); border-radius: 2px;
   }
+  .header img { width: 160px; margin-bottom: 16px; opacity: 0.9; display: block; margin-left: auto; margin-right: auto; }
   .header h1 {
     font-family: 'Noto Serif KR', serif;
     font-size: clamp(22px, 5vw, 28px);
     font-weight: 600; color: var(--text); margin-bottom: 8px;
   }
   .header p { font-size: 16px; color: var(--text-muted); line-height: 1.7; }
+
+  /* 관리자 버튼 */
+  .admin-btn {
+    position: fixed; top: 16px; right: 16px;
+    background: none; border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 12px; color: var(--text-muted);
+    cursor: pointer; z-index: 100;
+    transition: all 0.2s;
+  }
+  .admin-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .admin-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
   /* 카드 그리드 */
   .wall-wrap {
@@ -61,26 +72,48 @@
     break-inside: avoid;
     animation: fadeIn 0.4s ease;
     transition: border-color 0.2s, transform 0.2s;
+    position: relative;
   }
   .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .card.new-card { border-color: var(--accent); background: #fff8f3; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .card-name { font-size: 16px; font-weight: 500; color: var(--accent); }
   .card-time { font-size: 13px; color: var(--text-muted); }
   .card-text { font-size: 16px; color: var(--text); line-height: 1.8; word-break: keep-all; }
 
-  .loading { text-align: center; padding: 60px; color: var(--text-muted); font-size: 14px; }
-  .empty { text-align: center; padding: 80px 24px; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
+  /* 관리자 버튼들 */
+  .card-admin-btns {
+    display: none;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .card-admin-btns.visible { display: flex; }
+  .btn-edit, .btn-delete {
+    flex: 1;
+    padding: 7px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-edit { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+  .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-delete { background: #fff0f0; border: 1px solid #ffcccc; color: #e53935; }
+  .btn-delete:hover { background: #ffe0e0; }
+
+  .loading { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
+  .empty { text-align: center; padding: 80px 24px; color: var(--text-muted); font-size: 16px; line-height: 1.8; }
+  .wall-label { font-size: 14px; letter-spacing: 0.12em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 16px; font-weight: 500; }
 
   /* 플로팅 버튼 */
   .fab {
     position: fixed;
     bottom: 32px; right: 28px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 50px;
     padding: 14px 22px;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 15px; font-weight: 500;
@@ -92,9 +125,8 @@
   }
   .fab:hover { background: #e05500; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(254,107,1,0.45); }
   .fab:active { transform: scale(0.97); }
-  .fab-icon { font-size: 18px; }
 
-  /* 모달 오버레이 */
+  /* 모달 */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(26,16,8,0.45);
@@ -106,8 +138,6 @@
     padding: 20px;
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-  /* 모달 박스 */
   .modal {
     background: var(--card-bg);
     border-radius: 20px;
@@ -119,11 +149,7 @@
     position: relative;
   }
   .modal-overlay.open .modal { transform: translateY(0) scale(1); }
-  .modal-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 20px; font-weight: 600;
-    color: var(--text); margin-bottom: 6px;
-  }
+  .modal-title { font-family: 'Noto Serif KR', serif; font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
   .modal-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
   .modal input, .modal textarea {
     width: 100%;
@@ -132,11 +158,8 @@
     padding: 12px 16px;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 16px; font-weight: 400;
-    color: var(--text);
-    background: var(--bg);
-    outline: none;
-    transition: border-color 0.2s;
-    resize: none;
+    color: var(--text); background: var(--bg);
+    outline: none; transition: border-color 0.2s; resize: none;
   }
   .modal input:focus, .modal textarea:focus { border-color: var(--accent); }
   .modal input { margin-bottom: 12px; }
@@ -145,38 +168,29 @@
   .char-count.over { color: #e53935; }
   .modal-btns { display: flex; gap: 10px; }
   .btn-cancel {
-    flex: 1;
-    background: var(--bg); color: var(--text-muted);
-    border: 1px solid var(--border);
-    border-radius: 10px; padding: 13px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px; cursor: pointer;
+    flex: 1; background: var(--bg); color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 10px; padding: 13px;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 15px; cursor: pointer;
     transition: background 0.2s;
   }
   .btn-cancel:hover { background: #f0ddd0; }
   .btn-submit {
-    flex: 2;
-    background: var(--accent); color: #fff;
+    flex: 2; background: var(--accent); color: #fff;
     border: none; border-radius: 10px; padding: 13px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px; font-weight: 500; cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: background 0.2s, transform 0.1s;
   }
   .btn-submit:hover { background: #e05500; }
   .btn-submit:active { transform: scale(0.98); }
   .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
-
-  /* 닫기 버튼 */
   .modal-close {
     position: absolute; top: 16px; right: 18px;
     background: none; border: none;
     font-size: 20px; color: var(--text-muted);
-    cursor: pointer; line-height: 1;
-    transition: color 0.2s;
+    cursor: pointer; transition: color 0.2s;
   }
   .modal-close:hover { color: var(--text); }
 
-  /* 토스트 */
   .toast {
     position: fixed;
     bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -188,15 +202,15 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  @media (max-width: 600px) {
-    .wall-wrap { columns: 1; }
-  }
+  @media (max-width: 600px) { .wall-wrap { columns: 1; } }
 </style>
 </head>
 <body>
 
+<button class="admin-btn" id="adminBtn" onclick="toggleAdmin()">관리자</button>
+
 <div class="header">
-  <img src="logo.png" alt="월드비전 로고" style="width:160px; margin-bottom:16px; opacity:0.9;">
+  <img src="logo.png" alt="월드비전 로고">
   <h1>💬 근황토크</h1>
   <p>어떻게 지내셨어요? 잘 계셨나요?</p>
 </div>
@@ -205,12 +219,11 @@
   <div class="loading">불러오는 중...</div>
 </div>
 
-<!-- 플로팅 버튼 -->
 <button class="fab" onclick="openModal()">
-  <span class="fab-icon">✏️</span> 근황 남기기
+  <span>✏️</span> 근황 남기기
 </button>
 
-<!-- 모달 -->
+<!-- 글쓰기 모달 -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -226,11 +239,27 @@
   </div>
 </div>
 
+<!-- 수정 모달 -->
+<div class="modal-overlay" id="editOverlay" onclick="handleEditOverlayClick(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEditModal()">✕</button>
+    <div class="modal-title">수정하기 ✏️</div>
+    <div class="modal-sub">내용을 수정해주세요</div>
+    <input type="text" id="editNameInput" placeholder="이름 또는 닉네임" maxlength="20">
+    <textarea id="editMsgInput" placeholder="내용을 입력하세요 (400자 이내)" maxlength="400"></textarea>
+    <div class="char-count"><span id="editCharCount">0</span> / 400</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeEditModal()">취소</button>
+      <button class="btn-submit" id="editSubmitBtn" onclick="saveEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp }
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -246,6 +275,37 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  let isAdmin = false;
+  let currentEditId = null;
+
+  // 관리자 토글
+  window.toggleAdmin = function() {
+    if (isAdmin) {
+      isAdmin = false;
+      document.getElementById('adminBtn').classList.remove('active');
+      document.getElementById('adminBtn').textContent = '관리자';
+      refreshAdminBtns();
+      showToast('관리자 모드 해제');
+      return;
+    }
+    const pw = prompt('관리자 비밀번호를 입력하세요');
+    if (pw === '3160') {
+      isAdmin = true;
+      document.getElementById('adminBtn').classList.add('active');
+      document.getElementById('adminBtn').textContent = '관리자 모드 ON';
+      refreshAdminBtns();
+      showToast('관리자 모드 활성화 ✅');
+    } else if (pw !== null) {
+      showToast('비밀번호가 틀렸어요');
+    }
+  };
+
+  function refreshAdminBtns() {
+    document.querySelectorAll('.card-admin-btns').forEach(el => {
+      el.classList.toggle('visible', isAdmin);
+    });
+  }
+
   // 글자수
   const msgInput = document.getElementById('msgInput');
   const charCount = document.getElementById('charCount');
@@ -255,7 +315,15 @@
     charCount.parentElement.className = 'char-count' + (len > 400 ? ' over' : '');
   });
 
-  // 모달 열기/닫기
+  const editMsgInput = document.getElementById('editMsgInput');
+  const editCharCount = document.getElementById('editCharCount');
+  editMsgInput.addEventListener('input', () => {
+    const len = editMsgInput.value.length;
+    editCharCount.textContent = len;
+    editCharCount.parentElement.className = 'char-count' + (len > 400 ? ' over' : '');
+  });
+
+  // 모달
   window.openModal = function() {
     document.getElementById('modalOverlay').classList.add('open');
     document.getElementById('nameInput').focus();
@@ -267,8 +335,25 @@
     if (e.target === document.getElementById('modalOverlay')) closeModal();
   };
 
-  // ESC로 닫기
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  // 수정 모달
+  window.openEditModal = function(id, name, msg) {
+    currentEditId = id;
+    document.getElementById('editNameInput').value = name;
+    document.getElementById('editMsgInput').value = msg;
+    editCharCount.textContent = msg.length;
+    document.getElementById('editOverlay').classList.add('open');
+  };
+  window.closeEditModal = function() {
+    document.getElementById('editOverlay').classList.remove('open');
+    currentEditId = null;
+  };
+  window.handleEditOverlayClick = function(e) {
+    if (e.target === document.getElementById('editOverlay')) closeEditModal();
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeEditModal(); }
+  });
 
   // 글 올리기
   window.submitPost = async function() {
@@ -276,10 +361,8 @@
     const msg = msgInput.value.trim();
     if (!msg) { showToast('내용을 입력해주세요 😊'); return; }
     if (msg.length > 400) { showToast('400자 이내로 입력해주세요'); return; }
-
     const btn = document.getElementById('submitBtn');
     btn.disabled = true; btn.textContent = '올리는 중...';
-
     try {
       await addDoc(collection(db, 'posts'), { name, msg, createdAt: serverTimestamp() });
       document.getElementById('nameInput').value = '';
@@ -287,9 +370,38 @@
       closeModal();
       showToast('근황이 등록되었어요 🎉');
     } catch(e) {
-      showToast('오류가 발생했어요. 다시 시도해주세요.'); console.error(e);
+      showToast('오류가 발생했어요.'); console.error(e);
     }
     btn.disabled = false; btn.textContent = '남기기';
+  };
+
+  // 수정 저장
+  window.saveEdit = async function() {
+    const name = document.getElementById('editNameInput').value.trim() || '익명';
+    const msg = editMsgInput.value.trim();
+    if (!msg) { showToast('내용을 입력해주세요'); return; }
+    if (msg.length > 400) { showToast('400자 이내로 입력해주세요'); return; }
+    const btn = document.getElementById('editSubmitBtn');
+    btn.disabled = true; btn.textContent = '저장 중...';
+    try {
+      await updateDoc(doc(db, 'posts', currentEditId), { name, msg });
+      closeEditModal();
+      showToast('수정되었어요 ✅');
+    } catch(e) {
+      showToast('오류가 발생했어요.'); console.error(e);
+    }
+    btn.disabled = false; btn.textContent = '저장';
+  };
+
+  // 삭제
+  window.deletePost = async function(id) {
+    if (!confirm('정말 삭제할까요?')) return;
+    try {
+      await deleteDoc(doc(db, 'posts', id));
+      showToast('삭제되었어요');
+    } catch(e) {
+      showToast('오류가 발생했어요.'); console.error(e);
+    }
   };
 
   // 실시간 목록
@@ -301,8 +413,9 @@
       return;
     }
     list.innerHTML = '';
-    snapshot.forEach(doc => {
-      const d = doc.data();
+    snapshot.forEach(docSnap => {
+      const d = docSnap.data();
+      const id = docSnap.id;
       const time = d.createdAt ? formatTime(d.createdAt.toDate()) : '';
       const card = document.createElement('div');
       card.className = 'card';
@@ -312,6 +425,10 @@
           <span class="card-time">${time}</span>
         </div>
         <div class="card-text">${escapeHtml(d.msg)}</div>
+        <div class="card-admin-btns ${isAdmin ? 'visible' : ''}">
+          <button class="btn-edit" onclick="openEditModal('${id}', '${escapeAttr(d.name)}', '${escapeAttr(d.msg)}')">✏️ 수정</button>
+          <button class="btn-delete" onclick="deletePost('${id}')">🗑️ 삭제</button>
+        </div>
       `;
       list.appendChild(card);
     });
@@ -329,6 +446,10 @@
   function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
               .replace(/"/g,'&quot;').replace(/'/g,'&#039;').replace(/\n/g,'<br>');
+  }
+
+  function escapeAttr(str) {
+    return str.replace(/'/g,"\\'").replace(/\n/g,' ');
   }
 
   function showToast(msg) {
