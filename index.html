@@ -15,65 +15,24 @@
     --border: #f0ddd0;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 400;
-    min-height: 100vh;
-    padding-bottom: 100px;
-  }
-  .header {
-    text-align: center;
-    padding: 48px 24px 32px;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-  }
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: -1px; left: 50%; transform: translateX(-50%);
-    width: 60px; height: 3px;
-    background: var(--accent); border-radius: 2px;
-  }
+  body { background: var(--bg); font-family: 'Noto Sans KR', sans-serif; font-weight: 400; min-height: 100vh; padding-bottom: 100px; }
+
+  .header { text-align: center; padding: 48px 24px 32px; border-bottom: 1px solid var(--border); position: relative; }
+  .header::after { content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: var(--accent); border-radius: 2px; }
   .header img { width: 160px; margin-bottom: 16px; opacity: 0.9; display: block; margin-left: auto; margin-right: auto; }
-  .header h1 {
-    font-family: 'Noto Serif KR', serif;
-    font-size: clamp(22px, 5vw, 28px);
-    font-weight: 600; color: var(--text); margin-bottom: 8px;
-  }
+  .header h1 { font-family: 'Noto Serif KR', serif; font-size: clamp(22px, 5vw, 28px); font-weight: 600; color: var(--text); margin-bottom: 8px; }
   .header p { font-size: 16px; color: var(--text-muted); line-height: 1.7; }
 
-  /* 관리자 버튼 */
-  .admin-btn {
-    position: fixed; top: 16px; right: 16px;
-    background: none; border: 1px solid var(--border);
-    border-radius: 20px; padding: 6px 14px;
-    font-size: 12px; color: var(--text-muted);
-    cursor: pointer; z-index: 100;
-    transition: all 0.2s;
-  }
+  .admin-btn { position: fixed; top: 16px; right: 16px; background: none; border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 12px; color: var(--text-muted); cursor: pointer; z-index: 100; transition: all 0.2s; }
   .admin-btn:hover { border-color: var(--accent); color: var(--accent); }
   .admin-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
   /* 카드 그리드 */
-  .wall-wrap {
-    max-width: 960px;
-    margin: 36px auto 0;
-    padding: 0 20px;
-    columns: 3 280px;
-    column-gap: 16px;
-  }
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 16px;
-    break-inside: avoid;
-    animation: fadeIn 0.4s ease;
-    transition: border-color 0.2s, transform 0.2s;
-    position: relative;
-  }
+  .wall-wrap { max-width: 960px; margin: 36px auto 0; padding: 0 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .wall-wrap { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .wall-wrap { grid-template-columns: 1fr; } }
+
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px; animation: fadeIn 0.4s ease; transition: border-color 0.2s, transform 0.2s; }
   .card:hover { border-color: var(--accent); transform: translateY(-2px); }
   @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -81,128 +40,54 @@
   .card-time { font-size: 13px; color: var(--text-muted); }
   .card-text { font-size: 16px; color: var(--text); line-height: 1.8; word-break: keep-all; }
 
-  /* 관리자 버튼들 */
-  .card-admin-btns {
-    display: none;
-    gap: 6px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
-  }
+  .card-admin-btns { display: none; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
   .card-admin-btns.visible { display: flex; }
-  .btn-edit, .btn-delete {
-    flex: 1;
-    padding: 7px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.2s;
-  }
+  .btn-edit, .btn-delete { flex: 1; padding: 7px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s; }
   .btn-edit { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
   .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
   .btn-delete { background: #fff0f0; border: 1px solid #ffcccc; color: #e53935; }
   .btn-delete:hover { background: #ffe0e0; }
 
-  .loading { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
-  .empty { text-align: center; padding: 80px 24px; color: var(--text-muted); font-size: 16px; line-height: 1.8; }
-  .wall-label { font-size: 14px; letter-spacing: 0.12em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 16px; font-weight: 500; }
+  .loading { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; grid-column: 1/-1; }
+  .empty { text-align: center; padding: 80px 24px; color: var(--text-muted); font-size: 16px; line-height: 1.8; grid-column: 1/-1; }
+
+  /* 페이지네이션 */
+  .pagination-wrap { max-width: 960px; margin: 28px auto 0; padding: 0 20px; }
+  .page-info { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; }
+  .page-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 14px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s; }
+  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-btn.arrow { font-size: 16px; color: var(--text-muted); }
 
   /* 플로팅 버튼 */
-  .fab {
-    position: fixed;
-    bottom: 32px; right: 28px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 50px;
-    padding: 14px 22px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px; font-weight: 500;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(254,107,1,0.35);
-    display: flex; align-items: center; gap: 8px;
-    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-    z-index: 100;
-  }
-  .fab:hover { background: #e05500; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(254,107,1,0.45); }
-  .fab:active { transform: scale(0.97); }
+  .fab { position: fixed; bottom: 32px; right: 28px; background: var(--accent); color: #fff; border: none; border-radius: 50px; padding: 14px 22px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 20px rgba(254,107,1,0.35); display: flex; align-items: center; gap: 8px; transition: background 0.2s, transform 0.2s; z-index: 100; }
+  .fab:hover { background: #e05500; transform: translateY(-2px); }
 
   /* 모달 */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(26,16,8,0.45);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s;
-    padding: 20px;
-  }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,16,8,0.45); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; padding: 20px; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 32px 28px 28px;
-    width: 100%; max-width: 480px;
-    box-shadow: 0 16px 48px rgba(26,16,8,0.18);
-    transform: translateY(20px) scale(0.97);
-    transition: transform 0.25s;
-    position: relative;
-  }
+  .modal { background: var(--card-bg); border-radius: 20px; padding: 32px 28px 28px; width: 100%; max-width: 480px; box-shadow: 0 16px 48px rgba(26,16,8,0.18); transform: translateY(20px) scale(0.97); transition: transform 0.25s; position: relative; }
   .modal-overlay.open .modal { transform: translateY(0) scale(1); }
   .modal-title { font-family: 'Noto Serif KR', serif; font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
   .modal-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
-  .modal input, .modal textarea {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 16px; font-weight: 400;
-    color: var(--text); background: var(--bg);
-    outline: none; transition: border-color 0.2s; resize: none;
-  }
+  .modal input, .modal textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 400; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.2s; resize: none; }
   .modal input:focus, .modal textarea:focus { border-color: var(--accent); }
   .modal input { margin-bottom: 12px; }
   .modal textarea { height: 120px; margin-bottom: 4px; }
   .char-count { text-align: right; font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
   .char-count.over { color: #e53935; }
   .modal-btns { display: flex; gap: 10px; }
-  .btn-cancel {
-    flex: 1; background: var(--bg); color: var(--text-muted);
-    border: 1px solid var(--border); border-radius: 10px; padding: 13px;
-    font-family: 'Noto Sans KR', sans-serif; font-size: 15px; cursor: pointer;
-    transition: background 0.2s;
-  }
+  .btn-cancel { flex: 1; background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; padding: 13px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px; cursor: pointer; transition: background 0.2s; }
   .btn-cancel:hover { background: #f0ddd0; }
-  .btn-submit {
-    flex: 2; background: var(--accent); color: #fff;
-    border: none; border-radius: 10px; padding: 13px;
-    font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500;
-    cursor: pointer; transition: background 0.2s, transform 0.1s;
-  }
+  .btn-submit { flex: 2; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 13px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
   .btn-submit:hover { background: #e05500; }
-  .btn-submit:active { transform: scale(0.98); }
   .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
-  .modal-close {
-    position: absolute; top: 16px; right: 18px;
-    background: none; border: none;
-    font-size: 20px; color: var(--text-muted);
-    cursor: pointer; transition: color 0.2s;
-  }
-  .modal-close:hover { color: var(--text); }
+  .modal-close { position: absolute; top: 16px; right: 18px; background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; }
 
-  .toast {
-    position: fixed;
-    bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: #1a1008; color: #fff;
-    padding: 12px 24px; border-radius: 30px;
-    font-size: 14px; opacity: 0;
-    transition: all 0.3s; z-index: 999;
-    pointer-events: none; white-space: nowrap;
-  }
+  .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1008; color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 999; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  @media (max-width: 600px) { .wall-wrap { columns: 1; } }
 </style>
 </head>
 <body>
@@ -219,9 +104,12 @@
   <div class="loading">불러오는 중...</div>
 </div>
 
-<button class="fab" onclick="openModal()">
-  <span>✏️</span> 근황 남기기
-</button>
+<div class="pagination-wrap">
+  <div class="page-info" id="pageInfo"></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<button class="fab" onclick="openModal()"><span>✏️</span> 근황 남기기</button>
 
 <!-- 글쓰기 모달 -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
@@ -277,14 +165,100 @@
 
   let isAdmin = false;
   let currentEditId = null;
+  let allPosts = [];
+  let currentPage = 1;
 
-  // 관리자 토글
+  function getPageSize() {
+    if (window.innerWidth <= 600) return 6;
+    if (window.innerWidth <= 900) return 8;
+    return 12;
+  }
+
+  function renderPage() {
+    const pageSize = getPageSize();
+    const totalPages = Math.ceil(allPosts.length / pageSize);
+    if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+    const start = (currentPage - 1) * pageSize;
+    const pagePosts = allPosts.slice(start, start + pageSize);
+
+    const list = document.getElementById('postList');
+    list.innerHTML = '';
+
+    if (allPosts.length === 0) {
+      list.innerHTML = '<div class="empty">아직 근황이 없어요.<br>첫 번째 근황을 남겨보세요 ✨</div>';
+      document.getElementById('pageInfo').textContent = '';
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+
+    pagePosts.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="card-name">${escapeHtml(d.name)}</span>
+          <span class="card-time">${d.time}</span>
+        </div>
+        <div class="card-text">${escapeHtml(d.msg)}</div>
+        <div class="card-admin-btns ${isAdmin ? 'visible' : ''}">
+          <button class="btn-edit" onclick="openEditModal('${d.id}', '${escapeAttr(d.name)}', '${escapeAttr(d.msg)}')">✏️ 수정</button>
+          <button class="btn-delete" onclick="deletePost('${d.id}')">🗑️ 삭제</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    // 페이지 정보
+    document.getElementById('pageInfo').textContent = `총 ${allPosts.length}개 · ${currentPage} / ${totalPages} 페이지`;
+
+    // 페이지네이션 버튼
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'page-btn arrow';
+    prevBtn.textContent = '‹';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => { currentPage--; renderPage(); window.scrollTo(0,0); };
+    pagination.appendChild(prevBtn);
+
+    let pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages = [1];
+      if (currentPage > 3) pages.push('...');
+      for (let i = Math.max(2, currentPage-1); i <= Math.min(totalPages-1, currentPage+1); i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push('...');
+      pages.push(totalPages);
+    }
+
+    pages.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn' + (p === currentPage ? ' active' : '');
+      btn.textContent = p;
+      if (p === '...') { btn.disabled = true; btn.style.border = 'none'; btn.style.background = 'none'; }
+      else btn.onclick = () => { currentPage = p; renderPage(); window.scrollTo(0,0); };
+      pagination.appendChild(btn);
+    });
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'page-btn arrow';
+    nextBtn.textContent = '›';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => { currentPage++; renderPage(); window.scrollTo(0,0); };
+    pagination.appendChild(nextBtn);
+  }
+
+  window.addEventListener('resize', renderPage);
+
+  // 관리자
   window.toggleAdmin = function() {
     if (isAdmin) {
       isAdmin = false;
       document.getElementById('adminBtn').classList.remove('active');
       document.getElementById('adminBtn').textContent = '관리자';
-      refreshAdminBtns();
+      renderPage();
       showToast('관리자 모드 해제');
       return;
     }
@@ -293,18 +267,12 @@
       isAdmin = true;
       document.getElementById('adminBtn').classList.add('active');
       document.getElementById('adminBtn').textContent = '관리자 모드 ON';
-      refreshAdminBtns();
+      renderPage();
       showToast('관리자 모드 활성화 ✅');
     } else if (pw !== null) {
       showToast('비밀번호가 틀렸어요');
     }
   };
-
-  function refreshAdminBtns() {
-    document.querySelectorAll('.card-admin-btns').forEach(el => {
-      el.classList.toggle('visible', isAdmin);
-    });
-  }
 
   // 글자수
   const msgInput = document.getElementById('msgInput');
@@ -314,7 +282,6 @@
     charCount.textContent = len;
     charCount.parentElement.className = 'char-count' + (len > 400 ? ' over' : '');
   });
-
   const editMsgInput = document.getElementById('editMsgInput');
   const editCharCount = document.getElementById('editCharCount');
   editMsgInput.addEventListener('input', () => {
@@ -324,18 +291,9 @@
   });
 
   // 모달
-  window.openModal = function() {
-    document.getElementById('modalOverlay').classList.add('open');
-    document.getElementById('nameInput').focus();
-  };
-  window.closeModal = function() {
-    document.getElementById('modalOverlay').classList.remove('open');
-  };
-  window.handleOverlayClick = function(e) {
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
-  };
-
-  // 수정 모달
+  window.openModal = function() { document.getElementById('modalOverlay').classList.add('open'); document.getElementById('nameInput').focus(); };
+  window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('open'); };
+  window.handleOverlayClick = function(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); };
   window.openEditModal = function(id, name, msg) {
     currentEditId = id;
     document.getElementById('editNameInput').value = name;
@@ -343,17 +301,9 @@
     editCharCount.textContent = msg.length;
     document.getElementById('editOverlay').classList.add('open');
   };
-  window.closeEditModal = function() {
-    document.getElementById('editOverlay').classList.remove('open');
-    currentEditId = null;
-  };
-  window.handleEditOverlayClick = function(e) {
-    if (e.target === document.getElementById('editOverlay')) closeEditModal();
-  };
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeEditModal(); }
-  });
+  window.closeEditModal = function() { document.getElementById('editOverlay').classList.remove('open'); currentEditId = null; };
+  window.handleEditOverlayClick = function(e) { if (e.target === document.getElementById('editOverlay')) closeEditModal(); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeEditModal(); } });
 
   // 글 올리기
   window.submitPost = async function() {
@@ -367,15 +317,14 @@
       await addDoc(collection(db, 'posts'), { name, msg, createdAt: serverTimestamp() });
       document.getElementById('nameInput').value = '';
       msgInput.value = ''; charCount.textContent = '0';
+      currentPage = 1;
       closeModal();
       showToast('근황이 등록되었어요 🎉');
-    } catch(e) {
-      showToast('오류가 발생했어요.'); console.error(e);
-    }
+    } catch(e) { showToast('오류가 발생했어요.'); console.error(e); }
     btn.disabled = false; btn.textContent = '남기기';
   };
 
-  // 수정 저장
+  // 수정
   window.saveEdit = async function() {
     const name = document.getElementById('editNameInput').value.trim() || '익명';
     const msg = editMsgInput.value.trim();
@@ -385,11 +334,8 @@
     btn.disabled = true; btn.textContent = '저장 중...';
     try {
       await updateDoc(doc(db, 'posts', currentEditId), { name, msg });
-      closeEditModal();
-      showToast('수정되었어요 ✅');
-    } catch(e) {
-      showToast('오류가 발생했어요.'); console.error(e);
-    }
+      closeEditModal(); showToast('수정되었어요 ✅');
+    } catch(e) { showToast('오류가 발생했어요.'); console.error(e); }
     btn.disabled = false; btn.textContent = '저장';
   };
 
@@ -399,39 +345,23 @@
     try {
       await deleteDoc(doc(db, 'posts', id));
       showToast('삭제되었어요');
-    } catch(e) {
-      showToast('오류가 발생했어요.'); console.error(e);
-    }
+    } catch(e) { showToast('오류가 발생했어요.'); console.error(e); }
   };
 
-  // 실시간 목록
+  // 실시간
   const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
-    const list = document.getElementById('postList');
-    if (snapshot.empty) {
-      list.innerHTML = '<div class="empty">아직 근황이 없어요.<br>첫 번째 근황을 남겨보세요 ✨</div>';
-      return;
-    }
-    list.innerHTML = '';
+    allPosts = [];
     snapshot.forEach(docSnap => {
       const d = docSnap.data();
-      const id = docSnap.id;
-      const time = d.createdAt ? formatTime(d.createdAt.toDate()) : '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="card-top">
-          <span class="card-name">${escapeHtml(d.name)}</span>
-          <span class="card-time">${time}</span>
-        </div>
-        <div class="card-text">${escapeHtml(d.msg)}</div>
-        <div class="card-admin-btns ${isAdmin ? 'visible' : ''}">
-          <button class="btn-edit" onclick="openEditModal('${id}', '${escapeAttr(d.name)}', '${escapeAttr(d.msg)}')">✏️ 수정</button>
-          <button class="btn-delete" onclick="deletePost('${id}')">🗑️ 삭제</button>
-        </div>
-      `;
-      list.appendChild(card);
+      allPosts.push({
+        id: docSnap.id,
+        name: d.name,
+        msg: d.msg,
+        time: d.createdAt ? formatTime(d.createdAt.toDate()) : ''
+      });
     });
+    renderPage();
   });
 
   function formatTime(date) {
@@ -442,16 +372,10 @@
     if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
     return `${date.getMonth()+1}/${date.getDate()}`;
   }
-
   function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-              .replace(/"/g,'&quot;').replace(/'/g,'&#039;').replace(/\n/g,'<br>');
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;').replace(/\n/g,'<br>');
   }
-
-  function escapeAttr(str) {
-    return str.replace(/'/g,"\\'").replace(/\n/g,' ');
-  }
-
+  function escapeAttr(str) { return str.replace(/'/g,"\\'").replace(/\n/g,' '); }
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
